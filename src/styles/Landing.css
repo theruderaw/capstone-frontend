@@ -1,0 +1,70 @@
+html, body {
+  height: 100%;       /* make body and html full height */
+  margin: 0;          /* remove default margin */
+}
+
+.container {
+  display: flex;
+  height: 100vh;      /* full viewport height */
+  width: 100%;
+}
+
+.left {
+  width: 50%;
+  background-color: #111;
+  color: white;
+  /* height is inherited from container, no need to specify */
+}
+
+.right {
+  width: 50%;
+  background-color: #eee;
+  /* height is inherited from container */
+}
+
+.landing-text {
+    font-size: 48px;
+    font-weight: medium;
+    font-family: 'Space-Grotesk',sans-serif;
+    color: white;
+    margin: 100px;
+}
+
+.landing-text-dark {
+    font-size: 48px;
+    font-weight: medium;
+    font-family: 'Space-Grotesk',sans-serif;
+    color: black;
+    margin: 100px;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  gap: 8px;   /* try 4px / 8px / 12px */
+}
+
+form {
+  margin-top: 2rem;
+}
+
+.right > div:first-child {
+  margin-bottom: 4px;
+}
+
+.right form {
+  margin-top: 0;
+}
+
+
+
+
+.image {
+  width: 402px;
+  height: 268px;
+  margin-left: 100px ;
+  object-fit: cover; /* keeps aspect ratio while filling box */
+}
