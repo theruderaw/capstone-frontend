@@ -2,11 +2,11 @@ import React from 'react'
 import Login from './Login'
 
 
-function RightPanel() {
+function RightPanel({setIsLoggedIn}) {
   return (
     <div className='right'>
         <div className='landing-text-dark'>Welcome back, user</div>
-        <Login/>
+        <Login setIsLoggedIn={setIsLoggedIn}/>
     </div>
   )
 }

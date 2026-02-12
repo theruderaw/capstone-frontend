@@ -1,54 +1,98 @@
-import React from 'react'
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
+import React, { useState } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+
 import Landing from './components/Landing'
-import Dashboard from './components/Dashboard'
+import WorkerDashboard from './components/WorkerDashboard'
 import Reports from './components/Reports'
 import SubmitReport from './components/SubmitReport'
 import ProtectedRoute from './components/ProtectedRoute'
-import Navbar from './components/Navbar'
+import WorkerNavbar from './components/WorkerNavbar'
+import SupervisorDashboard from './components/SupervisorDashboard'
+import SupervisorNavbar from './components/SupervisorNavbar'
+import CheckTicket from './components/CheckTicket'
+import ProjectSupervisor from './components/ProjectSupervisor'
+import Profile from './components/Profile'
 
 function App() {
-  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
+  // React state is the source of truth
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    localStorage.getItem('isLoggedIn') === 'true'
+  )
 
   return (
     <BrowserRouter>
-      {/* Show navbar only if logged in */}
-      {isLoggedIn && <Navbar />}
+      {/* Global UI lives here, once */}
+      {isLoggedIn && (localStorage.status_id == 1) && <WorkerNavbar/>}
+      {isLoggedIn && (localStorage.status_id == 2) && <SupervisorNavbar/>}
 
       <Routes>
-        {/* Login always accessible */}
-        <Route path="/" element={<Landing />} />
+        {/* Login / Landing */}
+        <Route
+          path="/"
+          element={<Landing setIsLoggedIn={setIsLoggedIn} />}
+        />
 
         {/* Protected routes */}
         <Route
-          path="/dashboard"
+          path="/workerdashboard"
           element={
-            <ProtectedRoute>
-              <Dashboard />
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <WorkerDashboard />
             </ProtectedRoute>
           }
         />
-
+        <Route
+          path = "/supervisordashboard"
+          element={
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <SupervisorDashboard/>
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/reports"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
               <Reports />
             </ProtectedRoute>
           }
         />
-
+        <Route
+          path='/checkticket'
+          element = {
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <CheckTicket/>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/project'
+          element={
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <ProjectSupervisor/>
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/submit"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
               <SubmitReport />
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/profile/:workerID"
+          element={
+            <Profile/>
+          }
+        />
 
-        {/* Catch-all: redirect unknown routes to login */}
-        <Route path="*" element={<Landing />} />
+        {/* Fallback */}
+        <Route
+          path="*"
+          element={<Landing setIsLoggedIn={setIsLoggedIn} />}
+        />
       </Routes>
     </BrowserRouter>
   )

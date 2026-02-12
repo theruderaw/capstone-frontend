@@ -2,15 +2,14 @@ import React, { useState } from 'react'
 import Textbox from './Textbox'
 import Button from './Button'
 import { useNavigate } from 'react-router-dom'
-import '../styles/Login.css'
-function Login() {
+function Login({setIsLoggedIn}) {
   const [user, setuser] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const navigate = useNavigate()
   const handleLogin = async () => {
     try {
-      const response = await fetch('http://localhost:8000/login', {  // change URL to your backend
+      const response = await fetch('http://localhost:8000/auth/login', {  // change URL to your backend
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -26,12 +25,23 @@ function Login() {
       }
 
       const data = await response.json()
-      navigate('/dashboard')
-      console.log('Login success:', data)
+
+      // persist
       localStorage.setItem('isLoggedIn', 'true')
-      navigate('/dashboard')
-      localStorage.setItem("user_id",data.user_id)
-      localStorage.setItem("perms", JSON.stringify(data.perms))
+      localStorage.setItem('user_id', data.user_id)
+      localStorage.setItem('status_id', data.status_id)
+
+      // update React state (THIS FIXES NAVBAR)
+      setIsLoggedIn(true)
+
+      // redirect once
+      console.log(typeof(data.status_id),data.status_id)
+      if(data.status_id == 1){
+        navigate('/workerdashboard')
+      }
+      else if(data.status_id == 2){
+        navigate('/supervisordashboard')
+      }
       // redirect or save token here
     } catch (err) {
       setError(err.message)

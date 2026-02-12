@@ -1,14 +1,17 @@
-import React from 'react'
-import Login from './Login'
-import LeftPanel from './LeftPanel'
-import RightPanel from './RightPanel'
-import '../styles/Landing.css'
+import React, { useEffect } from 'react'
+import LeftPanel from './LeftPanel.jsx'
+import RightPanel from './RightPanel.jsx'
 
-function Landing() {
+function Landing({ setIsLoggedIn }) {
+  useEffect(() => {
+    localStorage.setItem('isLoggedIn', 'false')
+    setIsLoggedIn(false)
+  }, [setIsLoggedIn])
+
   return (
     <div className='container'>
-        <LeftPanel/>
-        <RightPanel/>
+      <LeftPanel />
+      <RightPanel setIsLoggedIn={setIsLoggedIn}/>
     </div>
   )
 }

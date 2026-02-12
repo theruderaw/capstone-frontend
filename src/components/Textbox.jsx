@@ -1,6 +1,13 @@
 import React from 'react'
 
-function Textbox({ text, setText, type = 'text', placeholder = '', className = '' }) {
+function Textbox({
+  text,
+  setText,
+  type = 'text',
+  placeholder = '',
+  className = '',
+  disabled = false
+}) {
   return (
     <input
       type={type}
@@ -8,6 +15,7 @@ function Textbox({ text, setText, type = 'text', placeholder = '', className = '
       placeholder={placeholder}
       onChange={(e) => setText(e.target.value)}
       className={`textbox ${className}`}
+      disabled={disabled}
     />
   )
 }
