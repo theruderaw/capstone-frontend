@@ -29,7 +29,7 @@ function App() {
         {/* Login / Landing */}
         <Route
           path="/"
-          element={<Landing setIsLoggedIn={setIsLoggedIn} />}
+          element={<Landing setIsLoggedIn={setIsLoggedIn}/>}
         />
 
         {/* Protected routes */}
@@ -37,7 +37,7 @@ function App() {
           path="/workerdashboard"
           element={
             <ProtectedRoute isLoggedIn={isLoggedIn}>
-              <WorkerDashboard />
+              <WorkerDashboard fromsupervisor = {false} workerId={localStorage.user_id}/>
             </ProtectedRoute>
           }
         />
@@ -50,7 +50,7 @@ function App() {
           }
         />
         <Route
-          path="/reports"
+          path="/reports/:userId"
           element={
             <ProtectedRoute isLoggedIn={isLoggedIn}>
               <Reports />
@@ -91,7 +91,7 @@ function App() {
         {/* Fallback */}
         <Route
           path="*"
-          element={<Landing setIsLoggedIn={setIsLoggedIn} />}
+          element={<Landing setIsLoggedIn={setIsLoggedIn}/>}
         />
       </Routes>
     </BrowserRouter>

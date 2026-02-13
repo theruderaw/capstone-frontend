@@ -1,14 +1,18 @@
-import React from 'react'
-import Navbar from './WorkerNavbar'
-import BillingTable from './BillingTable'
+import { useParams } from "react-router-dom";
+import BillingTable from "./BillingTable";
 
-function Reports() {
+function ReportPage() {
+  const { userId } = useParams(); // this grabs :userId from the route
+
   return (
     <div>
-       {/* <Navbar/> */}
-       <BillingTable showMoreButton={false}/>
+      <h1>User Report</h1>
+      <BillingTable
+        user_id={localStorage.user_id}           // pass the URL param
+        showMoreButton={false}
+      />
     </div>
-  )
+  );
 }
 
-export default Reports
+export default ReportPage;

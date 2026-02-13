@@ -5,6 +5,10 @@ function BillingTable({ user_id , showMoreButton, onMoreClick}) {
   const [finances, setFinances] = useState([]);   // ✅ array
   const [error, setError] = useState(null);       // ✅ defined
 
+  // Wage calculation interim = row.hours_worked*row.base_wage - row.penalties_observed*row.penalty_per_unit
+
+
+  
   useEffect(() => {
     const URL = `http://localhost:8000/finances/${user_id}`
     const fetchFinances = async () => {
@@ -30,7 +34,7 @@ function BillingTable({ user_id , showMoreButton, onMoreClick}) {
     if (user_id) {
       fetchFinances();
     }
-  }, [user_id]);
+  }, [user_id,showMoreButton]);
 
   if (error) return <p>Error: {error}</p>;
   if (!finances.length) return <p>No records found</p>;

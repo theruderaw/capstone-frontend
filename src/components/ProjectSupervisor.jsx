@@ -7,89 +7,39 @@ function ProjectSupervisor() {
   const [projectMembers,setProjectMembers] = useState([])
 
   useEffect(() => {
-    console.log("useEffect ran")
-    const fetchProjectId = async () => {
-        const userId = localStorage.user_id;
+    const fetchAllProjectData = async () => {
+      const userId = localStorage.user_id;
+      if (!userId) return console.error("No user_id found in localStorage");
 
-        if (!userId) {
-          console.error("No user_id found in localStorage");
-          return;
-        }
-
-        try {
-          const response = await fetch(
-            `http://localhost:8000/project/getID/${userId}`
-          );
-
-          if (!response.ok) {
-            throw new Error("Failed to fetch project_id");
-          }
-
-          const data = await response.json();
-          console.log(data)
-          const id = data.data[0].project_id
-          console.log(projectID)
-          setProjectID(id)
-          // Assuming backend returns { project_id: 123 }
-          localStorage.setItem("project_id", id);
-
-          console.log("project_id stored:", id);
-
-        } catch (error) {
-          console.error("Error fetching project_id:", error);
-        }
-      };
-
-    fetchProjectId();
-
-    const fetchProjectData = async () => {
-      const projectID = localStorage.getItem('project_id')
-      
       try {
-        const response = await fetch(
-          `http://localhost:8000/project/${projectID}?user_id=${localStorage.user_id}`
-        )
+        // 1️⃣ Fetch project ID
+        const responseId = await fetch(`http://localhost:8000/project/getID/${userId}`);
+        if (!responseId.ok) throw new Error("Failed to fetch project_id");
 
-        if (!response.ok){
-          throw new Error("Couldn't fetch project data")
-        }
-        const data = await response.json()
-        const projectData = data.data[0];
-        setProjectData(projectData)
+        const dataId = await responseId.json();
+        const id = dataId.data[0].project_id;
+        setProjectID(id);
+        localStorage.setItem("project_id", id);
 
-        console.log(projectData)
+        // 2️⃣ Fetch project data
+        const responseData = await fetch(`http://localhost:8000/project/${id}?user_id=${userId}`);
+        if (!responseData.ok) throw new Error("Couldn't fetch project data");
+        const data = await responseData.json();
+        setProjectData(data.data[0]);
+
+        // 3️⃣ Fetch project members
+        const responseMembers = await fetch(`http://localhost:8000/project/${id}/details?user_id=${userId}`);
+        if (!responseMembers.ok) throw new Error("Couldn't fetch project members");
+        const members = await responseMembers.json();
+        setProjectMembers(members.data);
+
       } catch (err) {
-        console.log("error fetching project data",err)
+        console.error(err);
       }
-    }
+    };
 
-    fetchProjectData()
-    const fetchProjectMembers = async () => {
-      const projectID = localStorage.getItem('project_id')
-      
-      try {
-        const response = await fetch(
-          `http://localhost:8000/project/${projectID}/details?user_id=${localStorage.user_id}`
-        )
-
-        if (!response.ok){
-          throw new Error("Couldn't fetch project data")
-        }
-        const data = await response.json()
-        const projectMembers = data.data;
-        setProjectMembers(projectMembers)
-
-        console.log(projectMembers)
-      } catch (err) {
-        console.log("error fetching project data",err)
-      }
-    }
-
-    fetchProjectMembers()
-
-    console.log(projectData)
+    fetchAllProjectData();
   }, []);
-
 
   return (
   <div style={{ padding: "20px" }}>

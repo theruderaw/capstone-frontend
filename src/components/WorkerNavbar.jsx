@@ -9,7 +9,7 @@ function WorkerNavbar() {
     <div className="navbar">
       <ul className="nav-list">
         <li><button onClick={() => navigate('/workerdashboard')}>Home</button></li>
-        <li><button onClick={() => navigate('/reports')}>Month Report</button></li>
+        <li><button onClick={() => navigate(`/reports/${localStorage.user_id}`)}>Month Report</button></li>
         <li><button onClick={() => navigate('/submit')}>Submit a report</button></li>
 
         <li className="logout">

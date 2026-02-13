@@ -1,12 +1,12 @@
 import { useParams } from "react-router-dom";
-import CardData from "./CardData";
+import WorkerDashboard from "./WorkerDashboard";
 
 function Profile() {
   const { workerID } = useParams();
-
+  console.log(workerID)
   return (
     <div>
-      <CardData imageUrl={null} user_id={workerID} />
+      <WorkerDashboard workerId = {workerID} fromsupervisor={true}/>
     </div>
   );
 }

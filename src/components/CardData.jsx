@@ -22,7 +22,7 @@ function CardData({ imageUrl ,user_id}) {
         </div>
 
         <div className="billing-area">
-          <BillingTable user_id={userId} onMoreClick={()=>navigate('/reports')} showMoreButton={true}/>
+          <BillingTable user_id={userId} onMoreClick={()=>navigate(`/reports/${userId}`)} showMoreButton={true}/>
         </div>
       </div>
     </div>

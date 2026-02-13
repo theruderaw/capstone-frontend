@@ -9,7 +9,7 @@ function SupervisorNavbar() {
     <div className="navbar">
       <ul className="nav-list">
         <li><button onClick={() => navigate('/supervisordashboard')}>Home</button></li>
-        <li><button onClick={() => navigate('/reports')}>Month Report</button></li>
+        <li><button onClick={() => navigate(`/reports/${localStorage.user_id}`)}>Month Report</button></li>
         <li><button onClick={() => navigate('/checkticket')}>Check Ticket</button></li>
         <li><button onClick={() => navigate('/project')}>Project</button></li>
 

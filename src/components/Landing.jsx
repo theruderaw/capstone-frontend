@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import LeftPanel from './LeftPanel.jsx'
 import RightPanel from './RightPanel.jsx'
 
-function Landing({ setIsLoggedIn }) {
+function Landing({setIsLoggedIn}) {
   useEffect(() => {
     localStorage.setItem('isLoggedIn', 'false')
     setIsLoggedIn(false)
