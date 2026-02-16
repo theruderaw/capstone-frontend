@@ -108,9 +108,9 @@ function ValidatePaymentsModal({ userId }) {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Close
-          </Button>
+          <button>
+                        Close
+          </button>
         </Modal.Footer>
       </Modal>
     </>

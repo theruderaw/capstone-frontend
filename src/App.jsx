@@ -7,6 +7,7 @@ import BillingTable from "./components/Common/BillingTable";
 import SubmitReport from "./components/Reports/SubmitReport";
 import CheckTicket from "./components/Reports/CheckTicket";
 import Project from "./components/Project/Project";
+import ProjectData from "./components/Project/ProjectData";
 import { useAuth } from "./AuthContext";
 import DashboardWrapper from "./components/Wrappers/DashboardWrapper";
 import BillingTableWrapper from "./components/Wrappers/BillingTableWrapper";
@@ -63,6 +64,13 @@ function App() {
                         <BillingTableWrapper dashboard={false}/>
                     </ProtectedRoute>
                 } />
+            <Route
+                path="projects/list"
+                element={
+                    <ProtectedRoute>
+                        <ProjectData/>
+                    </ProtectedRoute>
+                }/>
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>    
     </Router>
