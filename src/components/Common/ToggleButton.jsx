@@ -32,14 +32,12 @@ function ToggleButton({disabled,userId}) {
       })
       if(!res.ok) throw new Error("Req failed")
       const data = await res.json();
-      console.log(res.data)
+      console.log(data.data)
     } catch(err){
-      setError(err.message)
       console.error(err)
       // Optionally revert toggle on failure
       setIsOn(!newState)
     } finally {
-      setLoading(false)
     }
 
   }

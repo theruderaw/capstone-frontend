@@ -4,7 +4,7 @@ import Dashboard from "../Dashboard/Dashboard";
 
 function DashboardWrapper() {
   const { userId } = useParams(); // get userId from URL
-  return <Dashboard userId={userId} />;
+  return <Dashboard userId={userId} statuscheck={true}/>;
 }
 
 export default DashboardWrapper;
