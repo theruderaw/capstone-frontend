@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../../AuthContext'
 import workerImg from '../../assets/workerimg.png'
-import ToggleButton from '../Common/ToggleButton'
+import ToggleStatus from '../Common/ToggleStatus'
+import ToggleOnSite from '../Common/ToggleOnSite'
 
 function SelfText({userId,profile}) {
   const [userInfo, setUserInfo] = useState(null)
@@ -19,6 +20,7 @@ function SelfText({userId,profile}) {
 
         if (!response.ok) throw new Error("Failed to fetch user info")
         const data = await response.json()
+        console.log(data.role)
         setUserInfo(data.data)
       } catch (err) {
         console.error(err)
@@ -35,7 +37,16 @@ function SelfText({userId,profile}) {
 
   return (
     <div className="container mt-4 d-flex justify-content-center">
-      <ToggleButton disabled = {profile} userId={userId}/>
+      <div className="d-flex flex-column align-items-center mb-3 gap-2">
+      {["Worker", "Supervisor"].includes(userInfo.role) && (
+        <ToggleStatus disabled={profile} userId={userId} />
+      )}
+
+      {/* Show for Supervisor + Manager */}
+      {["Supervisor", "Manager"].includes(userInfo.role) && (
+        <ToggleOnSite disabled={profile} userId={userId} />
+      )}
+      </div>
       <div className="row align-items-center" style={{ width: "80vw" }}>
         {/* Left column: image */}
         <div

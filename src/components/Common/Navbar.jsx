@@ -28,7 +28,6 @@ function Navbar() {
           </>
         );
       case 3:
-        console.log("Here")
         return (
           <>
             <li className='nav-item'><Link className='nav-link active' to="/dashboard">Home</Link></li>
@@ -37,6 +36,15 @@ function Navbar() {
             <li className='nav-item'><Link className='nav-link active' to="/project/self">Workers</Link></li>
           </>
         );
+      case 5:
+        return (
+          <>  
+            <li className='nav-item'><Link className='nav-link active' to="/dashboard">Home</Link></li>
+            <li className='nav-item'><Link className='nav-link active' to="/users">View Users</Link></li>
+            <li className='nav-item'><Link className='nav-link active' to="projects/list">Project Details</Link></li>
+            <li className='nav-item'><Link className='nav-link active' to="/project/self">Workers</Link></li>
+          </>
+        )
       default:
         console.log("There")
         return null;

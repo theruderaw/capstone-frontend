@@ -86,7 +86,7 @@ function SubmitReport() {
         <div className="col-md-6">
           <div className="input-group">
             <span className="input-group-text">Reason</span>
-            <input type="text" className="form-control" placeholder="Short reason" />
+            <input type="text" onChange={(e) => setReason(e.target.value)} className="form-control" placeholder="Short reason" />
           </div>
         </div>
         <div className="col-md-6">
@@ -104,6 +104,7 @@ function SubmitReport() {
             <textarea
               className="form-control"
               placeholder="Write full complaint here..."
+              onChange = {(e) => setDescription(e.target.value)}
               style={{ minHeight: "50vh" }} // can scroll inside container
             ></textarea>
             <label>Full Complaint</label>

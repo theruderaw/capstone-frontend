@@ -20,7 +20,7 @@ function ProjectData() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`http://localhost:8000/project/getManagerProjects/${user.user_id}`, {
+        const res = await fetch(`http://localhost:8000/project/getID/${user.user_id}`, {
           headers: { Accept: "application/json" },
         });
         const data = await res.json();
