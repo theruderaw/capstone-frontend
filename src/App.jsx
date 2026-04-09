@@ -11,6 +11,7 @@ import ProjectData from "./components/Project/ProjectData";
 import { useAuth } from "./AuthContext";
 import DashboardWrapper from "./components/Wrappers/DashboardWrapper";
 import BillingTableWrapper from "./components/Wrappers/BillingTableWrapper";
+import UserTable from "./components/Users/UserTable";
 
 function App() {
     const {user} = useAuth()
@@ -41,7 +42,7 @@ function App() {
                 path="/report/resolve"
                 element = {
                     <ProtectedRoute>
-                        <CheckTicket/>
+                        <CheckTicket endpointURL = {"http://localhost:8000/report?user_id="}/>
                     </ProtectedRoute>
                 }/>
             <Route
@@ -71,6 +72,12 @@ function App() {
                         <ProjectData/>
                     </ProtectedRoute>
                 }/>
+            <Route
+                path="/users/"
+                element = {
+                    <ProtectedRoute><UserTable userId = {user.user_id}/></ProtectedRoute>
+                }
+            />
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>    
     </Router>

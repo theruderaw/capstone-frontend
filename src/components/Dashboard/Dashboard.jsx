@@ -3,6 +3,7 @@ import { useAuth } from '../../AuthContext'
 import SelfText from './SelfText'
 import CardData from './CardData'
 import ProjectData from '../Project/ProjectData'
+import CheckTicket from '../Reports/CheckTicket'
 
 function Dashboard({userId = null,self=false,statuscheck=false}) {
   const {user} = useAuth()
@@ -10,7 +11,7 @@ function Dashboard({userId = null,self=false,statuscheck=false}) {
   if(statuscheck){
     return (
       <div>
-        <SelfText userId={user_id} profile={Boolean(userId)}/>
+        <SelfText userId={user_id} profile={!self}/>
         <CardData userId={user_id} self={self} statuscheck={false}/>
       </div>
     )
@@ -20,6 +21,7 @@ function Dashboard({userId = null,self=false,statuscheck=false}) {
         <SelfText userId = {user_id} profile={Boolean(userId)}/>
         {(user.status_id == 2 || user.status_id == 1) && <CardData userId = {user_id} self={true}/>}
         {(user.status_id == 3) && <ProjectData userId = {user_id} self={true}/>}
+        {(user.status_id == 5) && <CheckTicket endpointURL = {"http://localhost:8000/report/all?user_id="}/>}
     </div>
   )
 }

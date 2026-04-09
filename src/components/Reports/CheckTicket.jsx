@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContext";
 import ResolveForm from "./ResolveForm";
 
-function CheckTicket() {
+function CheckTicket({endpointURL}) {
   const { user } = useAuth();
   const [reports, setReports] = useState([]);
   const [visibleCount, setVisibleCount] = useState(5); // initially show 5
@@ -40,7 +40,7 @@ function CheckTicket() {
     const fetchReports = async () => {
       try {
         const res = await fetch(
-          `http://localhost:8000/report/?user_id=${user.user_id}`,
+          `${endpointURL}${user.user_id}`,
           { headers: { accept: "application/json" } }
         );
         const data = await res.json();
