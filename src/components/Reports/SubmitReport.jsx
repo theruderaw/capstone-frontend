@@ -1,147 +1,157 @@
-import { useState,useEffect } from "react"
-import {useAuth} from "../../AuthContext"
-import Toast from "../Common/Toast"
+import { useState, useEffect } from "react";
+import { useAuth } from "../../AuthContext";
+import Toast from "../Common/Toast";
 
 function SubmitReport() {
-  const { user } = useAuth()
-  const [username, setUsername] = useState("")
-  const [supervisor, setSupervisor] = useState(null)
-  const [reason,setReason] = useState('')
-  const [description,setDescription] = useState('')
-  const [showToast,setShowToast] = useState(false)
+  const { user } = useAuth();
 
+  const [username, setUsername] = useState("");
+  const [supervisor, setSupervisor] = useState("");
+  const [reason, setReason] = useState("");
+  const [description, setDescription] = useState("");
+  const [showToast, setShowToast] = useState(false);
+
+  // 🔥 FETCH USER DATA
   useEffect(() => {
-    if (!user?.user_id) return
+    if (!user?.user_id) return;
 
     const fetchData = async () => {
       try {
-        // Fetch username
-        const userRes = await fetch(`http://localhost:8000/info/user?user_id=${user.user_id}`, {
-          headers: { Accept: "application/json" }
-        })
-        const userData = await userRes.json()
-        if (userRes.ok) setUsername(userData.data.name)
+        const userRes = await fetch(
+          `http://localhost:8000/info/user?user_id=${user.user_id}`
+        );
+        const userData = await userRes.json();
+        if (userRes.ok) setUsername(userData.data.name);
 
-        // Fetch supervisor
-        const supRes = await fetch(`http://localhost:8000/info/supervisor?user_id=${user.user_id}`, {
-          headers: { Accept: "application/json" }
-        })
-        const supData = await supRes.json()
-        if (supRes.ok) setSupervisor(supData.data.supervisor_name)
+        const supRes = await fetch(
+          `http://localhost:8000/info/supervisor?user_id=${user.user_id}`
+        );
+        const supData = await supRes.json();
+        if (supRes.ok) setSupervisor(supData.data.supervisor_name);
       } catch (err) {
-        console.error("Error fetching data:", err)
+        console.error(err);
       }
-    }
+    };
 
-    fetchData()
-  }, [user?.user_id])
+    fetchData();
+  }, [user?.user_id]);
 
+  // 🔥 SUBMIT HANDLER (CORRECT)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-
-  const handleClick = async () => {
-    if (!user?.user_id) return alert("User not logged in")
+    if (!user?.user_id) return;
 
     const payload = {
-      reason: reason,
-      description: description,
-      submission_date: new Date().toISOString().split("T")[0], // YYYY-MM-DD
-      user_id: user.user_id
-    }
+      reason,
+      description,
+      submission_date: new Date().toISOString().split("T")[0],
+      user_id: user.user_id,
+    };
 
     try {
       const res = await fetch("http://localhost:8000/report/submit", {
         method: "POST",
         headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload)
-      })
+        body: JSON.stringify(payload),
+      });
 
-      const data = await res.json()
-      console.log("Response:", data)
+      const data = await res.json();
 
       if (res.ok) {
-        setReason("")
-        setDescription("")
-		setShowToast(true)
+        setReason("");
+        setDescription("");
+        setShowToast(true);
       } else {
-        alert("Failed to submit report")
+        alert("Failed to submit");
       }
-
     } catch (err) {
-      console.error(err)
-      alert("Error submitting report")
+      console.error(err);
+      alert("Server error");
     }
-  }
-
+  };
 
   return (
-    <div className="container mt-4" 
-         style={{ maxHeight: "calc(100vh - 56px)", overflowY: "auto" }}>
-      {/* maxHeight: viewport minus navbar height, scroll only inside container */}
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col overflow-hidden px-6 py-4"
+    >
+      {/* SCROLL AREA */}
+      <div className="flex-1 min-h-0 overflow-y-auto space-y-4">
 
-      {/* Row 1: Two short fields */}
-      <div className="row g-3">
-        <div className="col-md-6">
-          <div className="input-group">
-            <span className="input-group-text">Reason</span>
-            <input type="text" onChange={(e) => setReason(e.target.value)} className="form-control" placeholder="Short reason" />
-          </div>
+        {/* ROW 1 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <input
+            type="text"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="Reason"
+            className="w-full border rounded-md px-3 py-2"
+            required
+          />
+
+          <input
+            type="text"
+            value={username}
+            disabled
+            className="w-full border rounded-md px-3 py-2 bg-gray-100"
+          />
+
         </div>
-        <div className="col-md-6">
-          <div className="input-group">
-            <span className="input-group-text">Complainant</span>
-            <input type="text" className="form-control" value={username} disabled/>
-          </div>
+
+        {/* TEXTAREA */}
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Full complaint"
+          className="w-full min-h-[35vh] border rounded-md p-3"
+          required
+        />
+
+        {/* ROW 2 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <input
+            type="text"
+            value={new Date().toISOString().split("T")[0]}
+            disabled
+            className="w-full border rounded-md px-3 py-2 bg-gray-100"
+          />
+
+          <input
+            type="text"
+            value={supervisor || ""}
+            disabled
+            className="w-full border rounded-md px-3 py-2 bg-gray-100"
+          />
+
         </div>
+
       </div>
 
-      {/* Row 2: Big textarea */}
-      <div className="row g-3 mt-4">
-        <div className="col-12">
-          <div className="form-floating">
-            <textarea
-              className="form-control"
-              placeholder="Write full complaint here..."
-              onChange = {(e) => setDescription(e.target.value)}
-              style={{ minHeight: "50vh" }} // can scroll inside container
-            ></textarea>
-            <label>Full Complaint</label>
-          </div>
-        </div>
+      {/* BUTTON */}
+      <div className="pt-4 flex justify-center">
+        <button
+          type="submit"
+          className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800"
+        >
+          Register
+        </button>
       </div>
 
-      {/* Row 3: Two long fields */}
-      <div className="row g-3 mt-4">
-        <div className="col-md-6">
-          <div className="input-group">
-            <span className="input-group-text">Date of Report</span>
-            <input type="text" className="form-control" disabled value={new Date().toISOString().split("T")[0]} />
-          </div>
-        </div>
-        <div className="col-md-6">
-          <div className="input-group">
-            <span className="input-group-text">Supervisor</span>
-            <input type="text" className="form-control" value={supervisor} disabled/>
-          </div>
-        </div>
-      </div>
-
-      {/* Row 4: Register button */}
-      <div className="row mt-4 mb-3">
-        <div className="col d-flex justify-content-center">
-          <button className="btn btn-dark" onClick={handleClick}>Register</button>
-        </div>
-      </div>
-	  <Toast
-        show={showToast}
-        onClose={() => setShowToast(false)}
-        message="Report submitted successfully!"
-        title="Success"
-      />
-    </div>
-  )
+      {/* TOAST */}
+      {showToast && (
+        <Toast
+          onClose={() => setShowToast(false)}
+          message="Report submitted successfully!"
+          title="Success"
+        />
+      )}
+    </form>
+  );
 }
 
-export default SubmitReport
+export default SubmitReport;

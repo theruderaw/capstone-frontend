@@ -2,9 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 
 function ToggleStatus({ disabled, userId }) {
   const [isOn, setIsOn] = useState(false);
-  const wsRef = useRef(null); // 🔥 persistent socket
+  const wsRef = useRef(null);
 
-  // 🔹 HTTP fetch ONLY if interactive
   useEffect(() => {
     if (disabled) return;
 
@@ -27,37 +26,25 @@ function ToggleStatus({ disabled, userId }) {
     fetchData();
   }, [disabled, userId]);
 
-  // 🔹 WebSocket ONLY if disabled (read-only mode)
   useEffect(() => {
-  if (!disabled || !userId) return;
+    if (!disabled || !userId) return;
 
-  const ws = new WebSocket(`ws://localhost:8000/ws/${userId}`);
-  wsRef.current = ws;
+    const ws = new WebSocket(`ws://localhost:8000/ws/${userId}`);
+    wsRef.current = ws;
 
-  ws.onopen = () => console.log("WS OPENED");
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.user_id === userId && data.type === "working_update") {
+        setIsOn(data.working);
+      }
+    };
 
-  ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    if (data.user_id == userId && data.type == "working_update") {
-      setIsOn(data.working);
-    }
-    
-    console.log(data.working,userId)
-    // console.log(data)
-  };
+    return () => {
+      ws.close();
+      wsRef.current = null;
+    };
+  }, [disabled, userId]);
 
-  return () => {
-    if (
-      wsRef.current &&
-      wsRef.current.readyState === WebSocket.OPEN
-    ) {
-      wsRef.current.close();
-    }
-    wsRef.current = null;
-  };
-}, [disabled, userId]);
-
-  // 🔹 Toggle (only works if NOT disabled)
   const handleClick = async () => {
     if (disabled) return;
 
@@ -65,7 +52,7 @@ function ToggleStatus({ disabled, userId }) {
     setIsOn(newState);
 
     const endpoint = newState ? "/working" : "/break";
-    console.log("status")
+
     try {
       const res = await fetch(
         `http://localhost:8000/info${endpoint}?user_id=${userId}`,
@@ -77,28 +64,26 @@ function ToggleStatus({ disabled, userId }) {
 
       if (!res.ok) throw new Error("Req failed");
 
-      const data = await res.json();
-      console.log(data.data);
+      await res.json();
     } catch (err) {
       console.error(err);
-      setIsOn(!newState); // revert
+      setIsOn(!newState);
     }
   };
 
   return (
-    <div className="form-check form-switch">
-      <input
-        className={`form-check-input ${isOn ? "bg-success" : "bg-danger"}`}
-        type="checkbox"
-        role="switch"
-        checked={isOn}
-        disabled={disabled}
-        onChange={handleClick}
-        style={{
-          width: "60px",
-          height: "30px",
-          cursor: disabled ? "not-allowed" : "pointer",
-        }}
+    <div
+      onClick={handleClick}
+      className={`relative flex items-center w-14 h-7 rounded-full transition-colors duration-300
+        ${isOn ? "bg-green-500" : "bg-red-500"}
+        ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+      `}
+    >
+      {/* knob */}
+      <div
+        className={`absolute top-0.5 left-0.5 h-6 w-6 bg-white rounded-full shadow-md transform transition-transform duration-300
+          ${isOn ? "translate-x-6.75" : "translate-x-0.25"}
+        `}
       />
     </div>
   );

@@ -36,54 +36,57 @@ function SelfText({userId,profile}) {
   if (!userInfo) return <div>Loading...</div>
 
   return (
-    <div className="container mt-4 d-flex justify-content-center">
-      <div className="d-flex flex-column align-items-center mb-3 gap-2">
-      {["Worker", "Supervisor"].includes(userInfo.role) && (
-        <ToggleStatus disabled={profile} userId={userId} />
-      )}
+ <div className="mt-4 flex">
+<div className="mt-4 flex w-full gap-4 items-center">
+  
+  {/* LEFT: Toggles (min width) */}
+  <div className="flex flex-col items-center gap-2 flex-shrink-0">
+    {["Worker", "Supervisor"].includes(userInfo.role) && (
+      <ToggleStatus disabled={profile} userId={userId} />
+    )}
 
-      {/* Show for Supervisor + Manager */}
-      {["Supervisor", "Manager"].includes(userInfo.role) && (
-        <ToggleOnSite disabled={profile} userId={userId} />
-      )}
-      </div>
-      <div className="row align-items-center" style={{ width: "80vw" }}>
-        {/* Left column: image */}
-        <div
-          className="col-md-4 d-flex align-items-center justify-content-center"
-          style={{ height: "200px" }}
-        >
-          <img
-            src={workerImg}
-            alt="Worker"
-            style={{ width: "150px", height: "200px", objectFit: "cover" }}
-          />
-        </div>
+    {["Supervisor", "Manager"].includes(userInfo.role) && (
+      <ToggleOnSite disabled={profile} userId={userId} />
+    )}
+  </div>
 
-        {/* Right column: table */}
-        <div className="col-md-8">
-          <table className="table table-striped mb-0">
-            <tbody>
-              <tr>
-                <td className="table-active">Name</td>
-                <td>{userInfo.name}</td>
-              </tr>
-              <tr>
-                <td className="table-active">Date of Birth</td>
-                <td>{userInfo.dob}</td>
-              </tr>
-              <tr>
-                <td className="table-active">Role</td>
-                <td>{userInfo.role}</td>
-              </tr>
-              <tr>
-                <td className="table-active">Aadhar No.</td>
-                <td>{userInfo.aadhar_no}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+  {/* MIDDLE: Image (min width) */}
+  <div className="flex justify-center flex-shrink-0">
+    <img
+      src={workerImg}
+      alt="Worker"
+      className="w-[150px] h-[200px] object-cover rounded-lg"
+    />
+  </div>
+
+  {/* RIGHT: Table (takes remaining space) */}
+  <div className="flex-1 min-w-0 ">
+    <table className="w-full border border-black rounded-lg border-separate overflow-hidden bg-gray-100">
+      <tbody>
+        <tr className="border-b border-gray-300">
+          <td className="bg-gray-200 p-3 font-medium">Name</td>
+          <td className="bg-white p-3">{userInfo.name}</td>
+        </tr>
+
+        <tr className="border-b border-gray-300">
+          <td className="bg-gray-200 p-3 font-medium">Date of Birth</td>
+          <td className="bg-white p-3">{userInfo.dob}</td>
+        </tr>
+
+        <tr className="border-b border-gray-300">
+          <td className="bg-gray-200 p-3 font-medium">Role</td>
+          <td className="bg-white p-3">{userInfo.role}</td>
+        </tr>
+
+        <tr>
+          <td className="bg-gray-200 p-3 font-medium">Aadhar No.</td>
+          <td className="bg-white p-3">{userInfo.aadhar_no}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
     </div>
   )
 }

@@ -47,26 +47,34 @@ function Login() {
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-4 items-center">
+
       <input
-        type='text'
+        type="text"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        placeholder='Username'
+        placeholder="Username"
+        className="w-full max-w-sm px-4 py-2 border rounded-lg"
       />
 
       <input
-        type='password'
+        type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        placeholder='Password'
+        placeholder="Password"
+        className="w-full max-w-sm px-4 py-2 border rounded-lg"
       />
 
-      <button type="button" onClick={handleLogin}>
+      <button
+        type="button"
+        onClick={handleLogin}
+        className="w-full max-w-sm bg-black text-white py-2 rounded-lg hover:bg-gray-800"
+      >
         Login
       </button>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className="text-red-500">{error}</p>}
+
     </div>
   )
 }

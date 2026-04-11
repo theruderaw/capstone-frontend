@@ -31,7 +31,7 @@ function Navbar() {
         return (
           <>
             <li className='nav-item'><Link className='nav-link active' to="/dashboard">Home</Link></li>
-            <li className='nav-item'><Link className='nav-link active' to="/finances/self">Check Payments</Link></li>
+            <li className='nav-item'><Link className='nav-link active' to="/payments/authorise">Check Payments</Link></li>
             <li className='nav-item'><Link className='nav-link active' to="projects/list">Project Details</Link></li>
             <li className='nav-item'><Link className='nav-link active' to="/project/self">Workers</Link></li>
           </>
@@ -52,22 +52,26 @@ function Navbar() {
   }
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-      <div className="container-fluid">
-        <Link className="navbar-brand" to="/dashboard">Dashboard</Link>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            {renderLinks()}
-          </ul>
-          <button className='btn btn-outline-light' onClick={() => { logout(); navigate('/'); }}>
-            Logout
-          </button>
-        </div>
-      </div>
-    </nav>
+  <nav className="fixed overflow-auto top-0 left-0 w-full h-[10vh] z-50 flex items-center bg-black text-white">
+    <div className="w-full flex justify-between items-center px-6">
+
+      <Link className="text-xl font-semibold" to="/dashboard">
+        Dashboard
+      </Link>
+
+      <ul className="flex gap-6 items-center">
+        {renderLinks()}
+      </ul>
+
+      <button
+        className="border border-white px-4 py-1 rounded hover:bg-white hover:text-black transition"
+        onClick={() => { logout(); navigate('/'); }}
+      >
+        Logout
+      </button>
+
+    </div>
+  </nav>
   );
 }
 

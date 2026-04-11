@@ -14,19 +14,31 @@ function Toast({ show, onClose, message, title = "Notification", delay = 3000 })
   if (!show) return null
 
   return (
-    <div
-      className="toast show position-fixed top-0 end-0 m-3 shadow"
-      style={{ zIndex: 9999 }}
-    >
-      <div className="toast-header">
-        <strong className="me-auto">{title}</strong>
-        <button
-          type="button"
-          className="btn-close"
-          onClick={onClose}
-        ></button>
+    <div className="fixed top-4 right-4 z-[9999]">
+
+      <div className="min-w-[300px] max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg">
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-2 border-b">
+          <span className="font-semibold text-gray-800">
+            {title}
+          </span>
+
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-black text-lg leading-none"
+          >
+            ×
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="px-4 py-3 text-gray-700">
+          {message}
+        </div>
+
       </div>
-      <div className="toast-body">{message}</div>
+
     </div>
   )
 }

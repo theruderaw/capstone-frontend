@@ -10,7 +10,7 @@ function Landing() {
     logout()
   }, [])
   return (
-    <div>
+    <div className='flex min-h-screen'>
         <LeftPanel/>
         <RightPanel/>
     </div>

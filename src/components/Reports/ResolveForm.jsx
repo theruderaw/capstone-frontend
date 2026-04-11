@@ -4,7 +4,7 @@ import Toast from "../Common/Toast";
 
 function ResolveForm({ report, show, onClose }) {
   const { user } = useAuth();
-  const [remarks, setRemarks] = useState(report.remarks || "");
+  const [remarks, setRemarks] = useState(report?.remarks || "");
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
@@ -12,38 +12,39 @@ function ResolveForm({ report, show, onClose }) {
 
   const handleSubmit = async () => {
     if (!remarks) {
-      // Show toast instead of alert
       setShowToast(true);
       return;
     }
 
     setLoading(true);
+
     try {
-      const resDate = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+      const resDate = new Date().toISOString().split("T")[0];
 
       const response = await fetch(
         `http://localhost:8000/report/${report.id}/resolve`,
         {
           method: "PUT",
           headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
             supervisor_id: user.user_id,
             res_date: resDate,
-            remarks: remarks,
+            remarks,
           }),
         }
       );
 
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-      const data = await response.json();
-      console.log("Report resolved:", data);
-      onClose(); // close the modal
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
+
+      await response.json();
+      onClose();
     } catch (err) {
-      console.error("Failed to resolve report:", err);
-      alert("Failed to resolve report. See console.");
+      console.error(err);
+      alert("Failed to resolve report.");
     } finally {
       setLoading(false);
     }
@@ -51,55 +52,78 @@ function ResolveForm({ report, show, onClose }) {
 
   return (
     <>
-      {/* Modal */}
-      <div className="modal d-block" tabIndex="-1" style={{ backgroundColor: "transparent" }}>
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header bg-dark text-white">
-              <h5 className="modal-title">Report #{report.id}</h5>
-              <button type="button" className="btn-close" onClick={onClose}></button>
-            </div>
-            <div className="modal-body">
-              <div className="mb-2"><strong>Worker:</strong> {report.worker_name}</div>
-              <div className="mb-2"><strong>Supervisor:</strong> {report.supervisor_name}</div>
-              <div className="mb-2"><strong>Date:</strong> {report.report_date}</div>
-              <div className="mb-2"><strong>Reason:</strong> {report.reason}</div>
-              <div className="mb-2"><strong>Report Content:</strong> {report.report_content}</div>
+      {/* OVERLAY */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div
+          className="absolute inset-0 bg-black/50"
+          onClick={onClose}
+        />
 
-              {/* Remarks input */}
-              <div className="mb-3">
-                <label htmlFor="remarks" className="form-label"><strong>Remarks:</strong></label>
-                <input
-                  type="text"
-                  id="remarks"
-                  className="form-control"
-                  value={remarks}
-                  onChange={(e) => setRemarks(e.target.value)}
-                  disabled={!!report.remarks} // disabled if already resolved
-                  placeholder={report.remarks ? "" : "Enter remarks..."}
-                />
-              </div>
+        {/* MODAL */}
+        <div className="relative w-[92%] max-w-2xl bg-white rounded-xl shadow-xl overflow-hidden">
+          
+          {/* HEADER */}
+          <div className="flex items-center justify-between bg-gray-900 text-white px-4 py-3">
+            <h5 className="text-lg font-semibold">
+              Report #{report.id}
+            </h5>
+
+            <button
+              onClick={onClose}
+              className="text-white hover:text-gray-300 text-xl"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* BODY */}
+          <div className="p-5 space-y-3 text-sm">
+            <p><span className="font-semibold">Worker:</span> {report.worker_name}</p>
+            <p><span className="font-semibold">Supervisor:</span> {report.supervisor_name}</p>
+            <p><span className="font-semibold">Date:</span> {report.report_date}</p>
+            <p><span className="font-semibold">Reason:</span> {report.reason}</p>
+            <p><span className="font-semibold">Content:</span> {report.report_content}</p>
+
+            {/* Remarks */}
+            <div className="pt-2">
+              <label className="block font-semibold mb-1">
+                Remarks:
+              </label>
+
+              <input
+                type="text"
+                value={remarks}
+                onChange={(e) => setRemarks(e.target.value)}
+                disabled={!!report.remarks}
+                placeholder={report.remarks ? "" : "Enter remarks..."}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-gray-400 disabled:bg-gray-100"
+              />
             </div>
-            <div className="modal-footer">
-              <button className="btn btn-secondary" onClick={onClose}>Close</button>
-              {!report.remarks && (
-                <button
-                  className="btn btn-success"
-                  onClick={handleSubmit}
-                  disabled={loading}
-                >
-                  {loading ? "Submitting..." : "Submit"}
-                </button>
-              )}
-            </div>
+          </div>
+
+          {/* FOOTER */}
+          <div className="flex justify-end gap-2 px-5 py-4 border-t">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
+            >
+              Close
+            </button>
+
+            {!report.remarks && (
+              <button
+                onClick={handleSubmit}
+                disabled={loading}
+                className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition disabled:opacity-50"
+              >
+                {loading ? "Submitting..." : "Submit"}
+              </button>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Backdrop */}
-      <div className="modal-backdrop fade show"></div>
-
-      {/* Toast notification */}
+      {/* TOAST (unchanged, assuming it's already styled) */}
       <Toast
         show={showToast}
         onClose={() => setShowToast(false)}

@@ -63,19 +63,41 @@ function Project() {
   if (!project) return <div className="text-center mt-4">No project found</div>;
 
   return (
-    <div className="container mt-4">
-      <h4 className="mb-3">Project Details</h4>
-      <div className="card shadow-sm mb-4">
-        <div className="card-body">
-          <h2 className="card-title text-dark fw-bold">{project.project_name}</h2>
-          <p className="card-text"><strong>Project ID:</strong> {project.project_id}</p>
-          <p className="card-text"><strong>Project Manager:</strong> {project.project_manager}</p>
-        </div>
-      </div>
+    <div className="max-w-5xl mx-auto mt-6 px-4">
+  
+  <h4 className="text-xl font-semibold mb-4">
+    Project Details
+  </h4>
 
-      {/* Worker list table */}
-      {user.project_id && <WorkerList projectId={user.project_id} />}
+  {/* Card */}
+  <div className="bg-white shadow-md rounded-lg mb-6 border border-gray-200">
+    <div className="p-5">
+      
+      <h2 className="text-2xl font-bold text-gray-900 mb-3">
+        {project.project_name}
+      </h2>
+
+      <p className="text-gray-700 mb-2">
+        <span className="font-semibold">Project ID:</span>{" "}
+        {project.project_id}
+      </p>
+
+      <p className="text-gray-700">
+        <span className="font-semibold">Project Manager:</span>{" "}
+        {project.project_manager}
+      </p>
+
     </div>
+  </div>
+
+  {/* Worker list */}
+  {user.project_id && (
+    <div className="mt-4">
+      <WorkerList projectId={user.project_id} />
+    </div>
+  )}
+
+</div>
   );
 }
 

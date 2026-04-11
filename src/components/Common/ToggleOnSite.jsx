@@ -2,9 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 
 function ToggleOnSite({ disabled, userId }) {
   const [isOnSite, setisOnSite] = useState(false);
-  const wsRef = useRef(null); // 🔥 persistent socket
+  const wsRef = useRef(null);
 
-  // 🔹 HTTP fetch ONLY if interactive
   useEffect(() => {
     if (disabled) return;
 
@@ -27,40 +26,29 @@ function ToggleOnSite({ disabled, userId }) {
     fetchData();
   }, [disabled, userId]);
 
-  // 🔹 WebSocket ONLY if disabled (read-only mode)
   useEffect(() => {
-  if (!userId) return;
+    if (!userId) return;
 
-  const ws = new WebSocket(`ws://localhost:8000/ws/${userId}`);
-  wsRef.current = ws;
+    const ws = new WebSocket(`ws://localhost:8000/ws/${userId}`);
+    wsRef.current = ws;
 
-  ws.onopen = () => console.log("WS OPENED");
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
 
-  ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    if (data.user_id == userId && data.type == "onsite_update") {
-      setisOnSite(data.onsite);
-    }
-    
-    console.log(data.working,userId)
-    // console.log(data)
-  };
+      if (data.user_id === userId && data.type === "onsite_update") {
+        setisOnSite(data.onsite);
+      }
+    };
 
-  return () => {
-    if (
-      wsRef.current &&
-      wsRef.current.readyState === WebSocket.OPEN
-    ) {
-      wsRef.current.close();
-    }
-    wsRef.current = null;
-  };
-}, [disabled, userId]);
+    return () => {
+      ws.close();
+      wsRef.current = null;
+    };
+  }, [disabled, userId]);
 
-  // 🔹 Toggle (only works if NOT disabled)
   const handleClick = async () => {
     if (disabled) return;
-    console.log("CLICK FIRED", { disabled, isOnSite });
+
     const newState = !isOnSite;
     setisOnSite(newState);
 
@@ -77,54 +65,34 @@ function ToggleOnSite({ disabled, userId }) {
 
       if (!res.ok) throw new Error("Req failed");
 
-      const data = await res.json();
-      console.log(data.data);
+      await res.json();
     } catch (err) {
       console.error(err);
-      setisOnSite(!newState); // revert
+      setisOnSite(!newState);
     }
   };
 
-  return (
+return (
   <div
-    className="form-check form-switch"
-    style={{
-      position: "relative",
-      display: "inline-block"
-    }}
+    onClick={handleClick}
+    className={`relative flex items-center w-14 h-7 rounded-full transition-colors duration-300
+      ${isOnSite ? "bg-gray-900" : "bg-yellow-400"}
+      ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+    `}
   >
-    <input
-      className={`form-check-input ${isOnSite ? "bg-dark" : "bg-warning"}`}
-      type="checkbox"
-      role="switch"
-      checked={isOnSite}
-      disabled={disabled}
-      onChange={handleClick}
-      style={{
-        width: "60px",
-        height: "30px",
-        position: "relative",
-        zIndex: 1,
-        cursor: disabled ? "not-allowed" : "pointer",
-      }}
-    />
-
-    {/* 🔥 ADD THIS */}
-    <span
-      style={{
-        position: "absolute",
-        left: !isOnSite ? "6px" : "36px",
-        top: "8px",
-        fontSize: "14px",
-        zIndex: 2,
-        pointerEvents: "none",
-        transition: "all 0.2s ease"
-      }}
+    {/* knob */}
+    <div
+      className={`absolute top-0.5 left-0.5 h-6 w-6 bg-white rounded-full shadow-md
+        flex items-center justify-center text-sm
+        transform transition-transform duration-300
+        ${isOnSite ? "translate-x-6.75" : "translate-x-0.25"}
+      `}
     >
-      {isOnSite ? "🚧":"🏢"}
-    </span>
+      {/* icon INSIDE knob */}
+      {isOnSite ? "🚧" : "🏢"}
+    </div>
   </div>
-)
+);
 }
 
 export default ToggleOnSite;
