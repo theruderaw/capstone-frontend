@@ -21,8 +21,7 @@ function ResolveForm({ report, show, onClose }) {
     try {
       const resDate = new Date().toISOString().split("T")[0];
 
-      const response = await fetch(
-        `http://localhost:8000/report/${report.id}/resolve`,
+      const response = await fetch(`/report/${report.id}/resolve`,
         {
           method: "PUT",
           headers: {

@@ -9,8 +9,7 @@ function BillingTable({ dashboard, userId, self }) {
     if (!userId) return;
 
     const fetchData = async () => {
-      const res = await fetch(
-        `http://localhost:8000/finances/${userId}?dashboard=${dashboard}`
+      const res = await fetch(`/finances/${userId}?dashboard=${dashboard}`
       );
       const result = await res.json();
 

@@ -1,61 +1,19 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 
-function ToggleStatus({ disabled, userId }) {
-  const [isOn, setIsOn] = useState(false);
-  const wsRef = useRef(null);
+function ToggleStatus({ disabled, userId, isOn }) {
 
-  useEffect(() => {
-    if (disabled) return;
 
-    const fetchData = async () => {
-      try {
-        const res = await fetch(
-          `http://localhost:8000/info?user_id=${userId}`,
-          { headers: { Accept: "application/json" } }
-        );
-
-        if (!res.ok) throw new Error("Failed to fetch info");
-
-        const data = await res.json();
-        setIsOn(data.data.working);
-      } catch (err) {
-        alert(err);
-      }
-    };
-
-    fetchData();
-  }, [disabled, userId]);
-
-  useEffect(() => {
-    if (!disabled || !userId) return;
-
-    const ws = new WebSocket(`ws://localhost:8000/ws/${userId}`);
-    wsRef.current = ws;
-
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.user_id === userId && data.type === "working_update") {
-        setIsOn(data.working);
-      }
-    };
-
-    return () => {
-      ws.close();
-      wsRef.current = null;
-    };
-  }, [disabled, userId]);
 
   const handleClick = async () => {
     if (disabled) return;
 
+    // Determine what we WANT to change it to
     const newState = !isOn;
-    setIsOn(newState);
-
     const endpoint = newState ? "/working" : "/break";
 
     try {
-      const res = await fetch(
-        `http://localhost:8000/info${endpoint}?user_id=${userId}`,
+      // Using relative path for the Vite proxy
+      const res = await fetch(`/info${endpoint}?user_id=${userId}`,
         {
           method: "POST",
           headers: { Accept: "application/json" },
@@ -63,11 +21,9 @@ function ToggleStatus({ disabled, userId }) {
       );
 
       if (!res.ok) throw new Error("Req failed");
-
-      await res.json();
+      // We don't update state here; we wait for the WebSocket broadcast!
     } catch (err) {
-      console.error(err);
-      setIsOn(!newState);
+      console.error("Failed to toggle status:", err);
     }
   };
 

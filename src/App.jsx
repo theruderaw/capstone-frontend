@@ -13,14 +13,19 @@ import DashboardWrapper from "./components/Wrappers/DashboardWrapper";
 import BillingTableWrapper from "./components/Wrappers/BillingTableWrapper";
 import UserTable from "./components/Users/UserTable";
 import AuthorisePaymentModal from "./components/Common/AuthorisePaymentModal";
-
+import HelmetLanding from "./components/Helmet/HelmetLanding";
+import AlertBanner from "./components/Alerts/AlertBanner";
+import SystemFreeze from "./components/Alerts/SystemFreeze";
 function App() {
-    const {user} = useAuth()
-  return (
-    <Router>
-        <div className="h-[10vh] fixed top-0 left-0 w-full z-50">
+    const { user } = useAuth();
+
+    return (
+        <Router>
+            <div className="h-[10vh] fixed top-0 left-0 w-full z-50">
             <Navbar />
         </div>
+        <AlertBanner />
+        <SystemFreeze />
         <div className="pt-[10vh] h-screen w-screen overflow-hidden">
             <Routes>
                 <Route path = "/" element = {<Landing/>}/>
@@ -46,7 +51,7 @@ function App() {
                     path="/report/resolve"
                     element = {
                         <ProtectedRoute>
-                            <CheckTicket endpointURL = {"http://localhost:8000/report?user_id="}/>
+                            <CheckTicket endpointURL = {"/report?user_id="}/>
                         </ProtectedRoute>
                     }/>
                 <Route
@@ -90,6 +95,14 @@ function App() {
                         </ProtectedRoute>
                     }
                 ></Route>
+                <Route
+                    path="/helmets"
+                    element={
+                        <ProtectedRoute>
+                            <HelmetLanding />
+                        </ProtectedRoute>
+                    }
+                />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>    
         </div>  

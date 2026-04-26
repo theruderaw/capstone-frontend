@@ -2,16 +2,44 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
+// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(),tailwindcss()],
+  plugins: [react(), tailwindcss()],
   server: {
-    host: true,          // listen on all interfaces
-    port: 5173,
-    strictPort: true,
-    hmr: {
-      host: 'petechiate-willetta-subspinose.ngrok-free.dev', // ngrok hostname
-      protocol: 'https',
-    },
-    allowedHosts: ['petechiate-willetta-subspinose.ngrok-free.dev'], // allow ngrok
-  },
+    proxy: {
+      '/info': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
+      '/user': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
+      '/auth': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
+      '/report': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
+      '/project': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
+      '/helmet': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
+      '/finances': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
+      '/ws': {
+        target: 'ws://localhost:8000',
+        ws: true,
+        changeOrigin: true,
+      }
+    }
+  }
 })

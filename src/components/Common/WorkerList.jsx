@@ -14,8 +14,7 @@ function WorkerList({ projectId }) {
 
     const fetchWorkers = async () => {
       try {
-        const res = await fetch(
-          `http://localhost:8000/project/${projectId}/details?user_id=${user.user_id}`,
+        const res = await fetch(`/project/${projectId}/details?user_id=${user.user_id}`,
           { headers: { Accept: "application/json" } }
         );
         const data = await res.json();

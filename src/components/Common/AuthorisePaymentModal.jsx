@@ -14,8 +14,7 @@ function AuthorisePaymentTable({ userId }) {
       setError(null);
 
       try {
-        const res = await fetch(
-          `http://localhost:8000/finances/?user_id=${userId}&validated=true&pending=true&order=true`
+        const res = await fetch(`/finances/?user_id=${userId}&validated=true&pending=true&order=true`
         );
 
         if (!res.ok) throw new Error("Failed to fetch finances");
@@ -36,8 +35,7 @@ function AuthorisePaymentTable({ userId }) {
     if (!user?.user_id) return;
 
     try {
-      const res = await fetch(
-        `http://localhost:8000/finances/${paymentId}/${action}`,
+      const res = await fetch(`/finances/${paymentId}/${action}`,
         {
           method: action === "authorize" ? "PATCH" : "DELETE",
           headers: {

@@ -8,7 +8,6 @@ function Navbar() {
   if(!user?.user_id) return null;
 
   const renderLinks = () => {
-    console.log(user.status_id)
     switch(Number(user.status_id)) {
       case 1:
         return (
@@ -41,12 +40,11 @@ function Navbar() {
           <>  
             <li className='nav-item'><Link className='nav-link active' to="/dashboard">Home</Link></li>
             <li className='nav-item'><Link className='nav-link active' to="/users">View Users</Link></li>
-            <li className='nav-item'><Link className='nav-link active' to="projects/list">Project Details</Link></li>
+            <li className='nav-item'><Link className='nav-link active' to="/helmets">Helmets</Link></li>
             <li className='nav-item'><Link className='nav-link active' to="/project/self">Workers</Link></li>
           </>
         )
       default:
-        console.log("There")
         return null;
     }
   }

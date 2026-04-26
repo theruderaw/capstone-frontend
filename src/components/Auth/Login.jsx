@@ -11,12 +11,11 @@ function Login() {
   useEffect(() => {
     if (user.user_id) {
       navigate("/dashboard")
-      console.log(user)
     }
   }, [user])
   const handleLogin = async () => {
     try {
-      const response = await fetch('http://localhost:8000/auth/login', {
+      const response = await fetch('http://127.0.0.1:8000/auth/login', {
         method: 'POST',
         headers: {
           'accept': 'application/json',
@@ -38,7 +37,6 @@ function Login() {
         setUser("status_id",data.status_id)
         
       }
-      console.log("Response:", data)
     
     } catch (err) {
       console.error(err)
